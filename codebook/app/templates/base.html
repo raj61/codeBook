@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} CodeBook</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/materialize.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
+</head>
+
+<body>
+
+    <nav>
+      <div class="nav-wrapper blue">
+        <a href="/" class="brand-logo">CodeBook</a>
+        <ul class="right hide-on-med-and-down">
+
+          {% if request.user.is_authenticated %}
+            <span > <a href='{% url 'profile' %}'>{{user}}</a></span>
+            <span> <a href="{% url 'auth_logout' %}">Logout</a> </span>
+
+          {% else %}
+            <span> <a href="{% url 'auth_login' %}">Login</a> </span>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+
+{% block content %}
+
+    <div class="parallax-container">
+      <div class="parallax"><img src="{% static 'app/img/parallax1.jpg' %}"></div>
+        Hello
+    </div>
+
+    {% endblock %}
+
+        <footer>
+            <p>&copy; {{ year }} - My Django Application</p>
+        </footer>
+    </div>
+
+    <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'app/scripts/materialize.js' %}"></script>
+    <script src="{% static 'app/scripts/my.js' %}"></script>
+    <script src="{% static 'app/scripts/respond.js' %}"></script>
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

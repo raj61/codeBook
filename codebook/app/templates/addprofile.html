@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+  <h5> Complete Your Profile </h5>
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="row">
+         <div class="input-field col s6">
+           <input id="fname" type="text" class="validate">
+           <label for="fname">First Name</label>
+         </div>
+         <div class="input-field col s6">
+           <input id="lname" type="text" class="validate">
+           <label for="lname">Last Name</label>
+         </div>
+       </div>
+       <div class="row">
+           <div class="input-field col s6">
+             <input id="institue" type="text" class="validate" name="institute">
+             <label for="institute">Institute</label>
+           </div>
+           <div class="input-field col s6">
+             <input id="year" type="text" class="validate" name="year">
+             <label for="year">Year</label>
+           </div>
+       </div>
+       <div class="file-field input-field">
+      <div class="btn">
+        <span>Image</span>
+        <input type="file" name='dp'>
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text">
+      </div>
+    </div>
+       <div class="row">
+           <div class="input-field col s6">
+             <input id="branch" type="text" class="validate" name="branch">
+             <label for="branch">Branch</label>
+           </div>
+           <div class="input-field col s6">
+             <input id="year" type="text" class="validate" name="year">
+             <label for="year">Graduation Year</label>
+           </div>
+       </div>
+       <div class="row">
+           <div class="input-field col s6">
+             <input id="mobile_no" type="text" class="validate" name="mobile_no">
+             <label for="mobile_no">Contact No.</label>
+           </div>
+       </div>
+    <div class="row">
+        <div class="input-field col s6">
+          <input id="codechef_handle" type="text" class="validate" name="codechef_handle">
+          <label for="codechef_handle">Codechef Handle</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s6">
+          <input  id="codeforces_handle" type="text" class="validate" name="codeforces_handle">
+          <label for="codeforces_handle">Codeforces Handle</label>
+        </div>
+        </div>
+    <div class="row">
+        <div class="input-field col s6">
+          <input  id="hackerrank_handle" type="text" class="validate" name="hackerrank_handle">
+          <label for="hackerrank_handle">HackerRank Handle</label>
+        </div>
+        </div>
+        <input class='btn' type="submit" value="Submit" />
+</form>
+    </div>
+{% endblock %}
