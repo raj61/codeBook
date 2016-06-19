@@ -1,8 +1,63 @@
-{% extends 'bast.html' %}
+{% extends 'base.html' %}
 
 
 
 
 {% block content %}
-Hello {{user}}
+<div class="row">
+<div class="valign-wrapper">
+
+    <div class="col s2 profile_img" >
+      <img src="{{profile.dp.url}}" class="circle responsive-img">
+    </div>
+  <div class="col s3">
+    <span class="black-text flow-text">
+     <p>{{profile.fname}} {{profile.lname}}<br/>
+       <small>{{profile.branch}}<br>
+     @{{profile.institute}}</small>
+   </p>
+    </span>
+
+  </div>
+  <div class="col s6">
+    <span class="center"> {{profile.mobile_no}} </span>
+  </div>
+
+  </div>
+
+</div>
+<div class="row">
+    <div class="container">
+        <div class="col s4 hoverable">
+            <span class="blockquote flow-text">Codechef</span>
+            <ul>
+              <ul class="collection with-header">
+                  <li class="collection-header"><h5>Long Contest</h5></li>
+                  <li class="collection-item">Rating:      <span class="grey-text flow-text right">   {{profile.codechef_rank.long_rating}}</span></li>
+                  <li class="collection-item">Global Rank: <span class="grey-text flow-text right">  {{profile.codechef_rank.long_global}}</span></li>
+                  <li class="collection-item">Local Rank:<span class="grey-text flow-text right">  {{profile.codechef_rank.long_local}}</span></li>
+              </ul>
+              <ul class="collection with-header">
+                  <li class="collection-header"><h5>Short Contest</h5></li>
+                  <li class="collection-item">Rating: <span class="grey-text flow-text right">   {{profile.codechef_rank.short_rating}}</span></li>
+                  <li class="collection-item">Global Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_global}}</span></li>
+                  <li class="collection-item">Local Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_local}}</span></li>
+              </ul>
+            </ul>
+        </div>
+        <div class="col s4 hoverable">
+          <span class="blockquote flow-text">Codeforces</span>
+          <ul class="collection with-header">
+              <li class="collection-header center"><h5>{{profile.codeforces_rank.position}}</h5></li>
+              <li class="collection-item">Rating: <span class="grey-text flow-text right">{{profile.codeforces_rank.rating}}</span>  </li>
+
+          </ul>
+        </div>
+        <span class="blockquote flow-text">hackerrank</span>
+
+        <div class="col s4 hoverable">
+
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -45,9 +45,9 @@ class Profile(models.Model):
     codechef_handle = models.CharField(max_length =100,blank=True)
     codeforces_handle = models.CharField(max_length=100,blank=True)
     hackerrank_handle = models.CharField(max_length=100,blank=True)
-    codechef_rank = models.ForeignKey(CodechefRank, related_name='profile',blank=True)
-    codeforces_rank = models.ForeignKey(CodeforcesRank, related_name='profile',blank=True)
-    hackerrank_rank = models.ForeignKey(HackerrankRank, related_name='profile',blank=True)
+    codechef_rank = models.ForeignKey(CodechefRank, related_name='profile',blank=True,null=True)
+    codeforces_rank = models.ForeignKey(CodeforcesRank, related_name='profile',blank=True,null=True)
+    hackerrank_rank = models.ForeignKey(HackerrankRank, related_name='profile',blank=True,null=True)
     mobile_no = models.CharField(max_length=10)
     dp = models.ImageField(upload_to = 'dp')
     def __str__(self):

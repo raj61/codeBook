@@ -8,6 +8,9 @@ from django.conf.urls import include
 import django.contrib.auth.views
 from django.contrib import admin
 import app.views
+from rest_framework.urlpatterns import format_suffix_patterns
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Uncomment the next lines to enable the admin:
 # from django.conf.urls import include
@@ -17,9 +20,12 @@ import app.views
 urlpatterns = [
     # Examples:
     url(r'^$', app.views.home, name='home'),
-
-    url(r'^profile/complete', app.views.addProfile, name='addProfile'),
-    url(r'^profile',app.views.profile,name='profile'),
+    url(r'^api/institute/$',app.views.institute_list,name='api_institute_detail'),
+    url(r'^api/institute/(?P<pk>[0-9]+)$',app.views.Institute_detail,name='api_institute_detail'),
+     url(r'^profile/$',app.views.profile,name='profile'),
+    url(r'^profile/complete/$', app.views.addProfile, name='addProfile'),
+    # url(r'^profile/$',app.views.profile,name='profile'),
      url(r'^admin/', include(admin.site.urls)),
      url(r'^accounts/', include('registration.backends.default.urls')),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = format_suffix_patterns(urlpatterns)

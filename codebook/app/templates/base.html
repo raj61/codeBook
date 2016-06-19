@@ -13,7 +13,7 @@
 <body>
 
     <nav>
-      <div class="nav-wrapper blue">
+      <div class="nav-wrapper fixed blue">
         <a href="/" class="brand-logo">CodeBook</a>
         <ul class="right hide-on-med-and-down">
 
@@ -33,9 +33,17 @@
 
     <div class="parallax-container">
       <div class="parallax"><img src="{% static 'app/img/parallax1.jpg' %}"></div>
-        Hello
+        <div class="center"><h2 class="white-text">Welcome Folks!</h2></div>
     </div>
+    <div id="institute_list" class="row">
 
+    </div>
+    <div class="row center">
+      <div class="input-field col s6 offset-s3">
+        <input id="institute_search" type="text" class="validate" name='institute_search'>
+        <label for="institute_search">Search Institute</label>
+      </div>
+    </div>
     {% endblock %}
 
         <footer>
@@ -44,6 +52,8 @@
     </div>
 
     <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'app/scripts/jquery.autocomplete.js' %}"></script>
+
     <script src="{% static 'app/scripts/materialize.js' %}"></script>
     <script src="{% static 'app/scripts/my.js' %}"></script>
     <script src="{% static 'app/scripts/respond.js' %}"></script>
