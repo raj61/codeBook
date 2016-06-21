@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+
+
+
+          <div class="col s12">
+              <h3> Leaderboard </h3>
+          </div>
+          {% for profile in profiles %}
+
+         <div class="col s12 profiles grey-text hoverable">  <a href="{% url 'profile' profile.user%}" <span class='col s3'><h5>{{profile.fname}} {{profile.lname}}</h5> </span></a><span class="col s3"> <h5>{{profile.codechef_rank.long_rating}}</h5></span><span class="col s3"><h5> {{profile.codechef_rank.short_rating}}</h5></span><span class="col s3"><h5> {{profile.codeforces_rank.rating}}
+</h5></span>
+</div>
+
+          {% endfor %}
+            </ul>
+    </div>
+
+</div>
+{% endblock %}

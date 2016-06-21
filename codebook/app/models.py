@@ -14,7 +14,7 @@ class Branch(models.Model):
     def __str__(self):
         return self.name
 class CodechefRank(models.Model):
-    handle = models.CharField(max_length=100)
+    handle = models.CharField(max_length=100,unique=True)
     long_global = models.IntegerField(null=True)
     long_local = models.IntegerField(null=True)
     long_rating = models.FloatField(null=True)
@@ -24,13 +24,13 @@ class CodechefRank(models.Model):
     def __str__(self):
         return self.handle
 class CodeforcesRank(models.Model):
-    handle = models.CharField(max_length=100)
+    handle = models.CharField(max_length=100,unique=True)
     rating = models.IntegerField()
     position = models.CharField(max_length=20,null=True)
     def __str__(self):
         return self.handle
 class HackerrankRank(models.Model):
-    handle = models.CharField(max_length=100)
+    handle = models.CharField(max_length=100,unique=True)
     points = models.IntegerField()
     def __str__(self):
         return self.handle

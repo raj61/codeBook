@@ -14,11 +14,12 @@
 
     <nav>
       <div class="nav-wrapper fixed blue">
-        <a href="/" class="brand-logo">CodeBook</a>
+        <a href="/" class="brand-logo" style="padding:3px">CodeBook</a>
         <ul class="right hide-on-med-and-down">
 
+            <span > <a href='{% url 'leaderboard' %}'>Leaderboard</a></span>
           {% if request.user.is_authenticated %}
-            <span > <a href='{% url 'profile' %}'>{{user}}</a></span>
+            <span ><a href='{% url 'profile' request.user %}'>{{user}}</a></span>
             <span> <a href="{% url 'auth_logout' %}">Logout</a> </span>
 
           {% else %}
@@ -34,6 +35,12 @@
     <div class="parallax-container">
       <div class="parallax"><img src="{% static 'app/img/parallax1.jpg' %}"></div>
         <div class="center"><h2 class="white-text">Welcome Folks!</h2></div>
+        <div class="row center white-text">
+          <div class="input-field col s6 offset-s3">
+            <input id="user_search" type="text" class="validate" name='user_search'>
+            <label for="user_search">Search </label>
+          </div>
+        </div>
     </div>
     <div id="institute_list" class="row">
 

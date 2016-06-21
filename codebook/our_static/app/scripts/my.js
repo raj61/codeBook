@@ -15,5 +15,19 @@ $(document).ready(function () {
     }
     });
   });
- console.log("hello");
+
+  var user = [];
+  $.getJSON('/api/users.json',function(data){
+    $.each(data,function(i,item){
+      user.push(item.username);
+    });
+    $('#user_search').autocomplete({
+    lookup: user,
+    onSelect: function (suggestion) {
+        window.location.href = "/profile/"+suggestion.value;
+    }
+    });
+  });
+
+
 });
