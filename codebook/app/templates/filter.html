@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="row">
+      <!-- <div class="input-field col s6">
+          <input id='institute' name='institute' class="validate" type="text" >
+          <lable for='institute'>Institue Name </lable>
+
+      </div>
+      <div class="input-field col s6">
+          <input id='branch' name='branch' class="validate" type="text" >
+          <lable for='branch'>Institue Name </lable>
+
+      </div> -->
+      <div class="input-field col s6">
+        <input id="institute" type="text" class="validate" name='institute'>
+        <label for="institute">Institute</label>
+      </div>
+      <div class="input-field col s6">
+        <input id="branch" type="text" class="validate" name='branch'>
+        <label for="branch">Branch</label>
+      </div>
+
+  </div>
+  <input type="submit" class="btn" value="Search">
+</form>
+
+{% endblock %}
