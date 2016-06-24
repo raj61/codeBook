@@ -3,7 +3,7 @@ Definition of views.
 """
 
 from django.shortcuts import render,redirect
-from django.http import HttpRequest
+from django.http import HttpRequest,HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -124,12 +124,17 @@ def profile(request,user):
         profile = None
     if not profile:
         return redirect('/profile/complete')
+    if request.POST:
+        codechefUpdate(profile.codechef_handle)
+        codeforcesUpdate(profile.codeforces_handle)
+        return HttpResponseRedirect("/user")
+    print (request.POST)
     context={
         "profile":profile
         }
     return render(request,"profile.html",context)
 def codechefUpdate(codechef_handle):
-    url = 'https://www.codechef.com/users/'+request.POST['codechef_handle']
+    url = 'https://www.codechef.com/users/'+codechef_handle
     res = requests.get(url)
     Soup = bs4.BeautifulSoup(res.text)
     rating = Soup.select('.rating-table td')
@@ -139,20 +144,42 @@ def codechefUpdate(codechef_handle):
     codechef_short_rating,r = rating[8].getText().split()
     try:
         codechef_rank = CodechefRank.objects.get(handle=codechef_handle)
-        codechef_rank.update(long_global = int(codechef_long_global),
-                                long_local = int(codechef_long_local),
-                                long_rating = float(codechef_long_rating),
-                                 short_rating = float(codechef_short_rating),
-                                 short_global = int(codechef_short_global),
-                                 short_local = int(codechef_short_local))
+        codechef_rank.long_global = int(codechef_long_global)
+        codechef_rank.long_local = int(codechef_long_local)
+        codechef_rank.long_rating = float(codechef_long_rating)
+        codechef_rank.short_rating = float(codechef_short_rating)
+        codechef_rank.short_global = int(codechef_short_global)
+        codechef_rank.short_local = int(codechef_short_local)
     except CodechefRank.DoesNotExist:
-        CodechefRank(handle=request.POST['codechef_handle'],
+        CodechefRank(handle=codechef_handle,
                                             long_global = int(codechef_long_global),
                                             long_local = int(codechef_long_local),
                                             long_rating = float(codechef_long_rating),
                                              short_rating = float(codechef_short_rating),
                                              short_global = int(codechef_short_global),
                                              short_local = int(codechef_short_local)).save()
+def codeforcesUpdate(codeforces_handle):
+    url = 'http://codeforces.com/profile/'+codeforces_handle
+    res = requests.get(url)
+    Soup = bs4.BeautifulSoup(res.text)
+    rating = Soup.select('.info span')
+    # print(rating)
+    position = rating[0].getText()
+    ratin = int(rating[1].getText())
+    print (ratin)
+    try:
+        codeforces_rank = CodeforcesRank.objects.get(handle=codeforces_handle)
+        print (codeforces_rank.rating)
+        codeforces_rank.rating =  ratin
+        print (codeforces_rank.rating)
+        codeforces_rank.position = position
+        codeforces_rank.save()
+    except CodechefRank.DoesNotExist:
+        codeforces_rank = CodeforcesRank(handle=codeforces_handle,
+                                         rating = ratin,
+                                         position = position).save()
+
+
 
 
 
