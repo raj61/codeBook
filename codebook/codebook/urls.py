@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Examples:
     url(r'^$', app.views.home, name='home'),
+    url(r'^api/profile/$',app.views.profile_list,name='api_profile_list'),
+    url(r'^api/profile/(?P<pk>[0-9]+)$',app.views.profile_detail,name='api_profile_detail'),
     url(r'^api/institute/$',app.views.institute_list,name='api_institute_list'),
     url(r'^api/institute/(?P<pk>[0-9]+)$',app.views.Institute_detail,name='api_institute_detail'),
     url(r'^api/users/$',app.views.user_list,name='api_user_list'),

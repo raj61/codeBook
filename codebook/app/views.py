@@ -24,11 +24,51 @@ def home(request):
 
         }
     )
+
+
+@api_view(['GET','POST'])
+def profile_list(request,format=None):
+    if request.method == 'GET':
+        profile = Profile.objects.all()
+        serializer = ProfileSerializer(profile,many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','PUT','DELETE'])
+def profile_detail(request,pk,format=None):
+    try:
+        profile = Profile.objects.get(pk=pk)
+    except Profile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = ProfileSerializer(profile,data=request.data)
+        if serialzier.is_valid():
+            serialzier.save()
+            return Response(serializer.data)
+        return Response(serialzier.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        profile.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['GET'])
 def user_list(request,format=None):
     user = User.objects.all()
     serializer = UserSerializer(user,many=True)
     return Response(serializer.data)
+
 @api_view(['GET','POST'])
 def institute_list(request,format=None):
     if request.method == 'GET':
@@ -88,6 +128,33 @@ def profile(request,user):
         "profile":profile
         }
     return render(request,"profile.html",context)
+def codechefUpdate(codechef_handle):
+    url = 'https://www.codechef.com/users/'+request.POST['codechef_handle']
+    res = requests.get(url)
+    Soup = bs4.BeautifulSoup(res.text)
+    rating = Soup.select('.rating-table td')
+    codechef_long_global,codechef_long_local = rating[4].getText().split('/')
+    codechef_long_rating,r = rating[5].getText().split()
+    codechef_short_global,codechef_short_local = rating[7].getText().split('/')
+    codechef_short_rating,r = rating[8].getText().split()
+    try:
+        codechef_rank = CodechefRank.objects.get(handle=codechef_handle)
+        codechef_rank.update(long_global = int(codechef_long_global),
+                                long_local = int(codechef_long_local),
+                                long_rating = float(codechef_long_rating),
+                                 short_rating = float(codechef_short_rating),
+                                 short_global = int(codechef_short_global),
+                                 short_local = int(codechef_short_local))
+    except CodechefRank.DoesNotExist:
+        CodechefRank(handle=request.POST['codechef_handle'],
+                                            long_global = int(codechef_long_global),
+                                            long_local = int(codechef_long_local),
+                                            long_rating = float(codechef_long_rating),
+                                             short_rating = float(codechef_short_rating),
+                                             short_global = int(codechef_short_global),
+                                             short_local = int(codechef_short_local)).save()
+
+
 
 
 def addProfile(request):
@@ -96,19 +163,26 @@ def addProfile(request):
         try:
             codechef_rank = CodechefRank.objects.get(handle=request.POST['codechef_handle'])
         except CodechefRank.DoesNotExist:
-            url = 'https://www.codechef.com/users/'+request.POST['codechef_handle']
-            res = requests.get(url)
-            Soup = bs4.BeautifulSoup(res.text)
-            rating = Soup.select('.rating-table td')
-            codechef_long_global,codechef_long_local = rating[4].getText().split('/')
-            codechef_long_rating,r = rating[5].getText().split()
-            codechef_short_global,codechef_short_local = rating[7].getText().split('/')
-            codechef_short_rating,r = rating[8].getText().split()
-            codechef_rank = CodechefRank(handle=request.POST['codechef_handle'],long_global = int(codechef_long_global),long_local = int(codechef_long_local),long_rating = float(codechef_long_rating), short_rating = float(codechef_short_rating),short_global = int(codechef_short_global),short_local = int(codechef_short_local))
-            codechef_rank.save()
+            codechefUpdate(request.POST['codechef_handle'])
+            # url = 'https://www.codechef.com/users/'+request.POST['codechef_handle']
+            # res = requests.get(url)
+            # Soup = bs4.BeautifulSoup(res.text)
+            # rating = Soup.select('.rating-table td')
+            # codechef_long_global,codechef_long_local = rating[4].getText().split('/')
+            # codechef_long_rating,r = rating[5].getText().split()
+            # codechef_short_global,codechef_short_local = rating[7].getText().split('/')
+            # codechef_short_rating,r = rating[8].getText().split()
+            # codechef_rank = CodechefRank(handle=request.POST['codechef_handle'],
+            #                                     long_global = int(codechef_long_global),
+            #                                     long_local = int(codechef_long_local),
+            #                                     long_rating = float(codechef_long_rating),
+            #                                      short_rating = float(codechef_short_rating),
+            #                                      short_global = int(codechef_short_global),
+            #                                      short_local = int(codechef_short_local))
+            # codechef_rank.save()
         #codeforces record fetch
         try:
-            codeforces_rank = CodeforcesRank.objects.get(handle=request.POST['codechef_handle'])
+            codeforces_rank = CodeforcesRank.objects.get(handle=request.POST['codeforces_handle'])
         except CodeforcesRank.DoesNotExist:
             url = 'http://codeforces.com/profile/'+request.POST['codeforces_handle']
             res = requests.get(url)
@@ -176,7 +250,7 @@ def filter(request):
         elif institute:
             profiles = Profile.objects.filter(institute=Institute.objects.get(name=institute))
         elif  branch:
-            profiles = Branch.obects.get(branch = branch).profiles.all()
+            profiles = Branch.objects.get(branch = branch).profiles.all()
         else:
             profiles = Profile.objects.all()
         context = {
