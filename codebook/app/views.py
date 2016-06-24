@@ -164,3 +164,23 @@ def leaderboard(request):
     'profiles':profiles
     }
     return render(request,"leaderboard.html",context)
+
+def filter(request):
+    if request.method == 'POST':
+        institute = request.POST.get("institute",None)
+        branch = request.POST.get("branch",None)
+        if institute and branch:
+            profiles1 = Institute.objects.get(instititue = instititue).profiles.all()
+            profiles = profiles1.filter(branch=Branch.objects.get(branch=branch))
+
+        elif institute:
+            profiles = Profile.objects.filter(institute=Institute.objects.get(name=institute))
+        elif  branch:
+            profiles = Branch.obects.get(branch = branch).profiles.all()
+        else:
+            profiles = Profile.objects.all()
+        context = {
+        "profiles":profiles
+        }
+        return render(request,'leaderboard.html',context);
+    return render(request,'filter.html',{});

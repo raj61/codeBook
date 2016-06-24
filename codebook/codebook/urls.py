@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^api/institute/(?P<pk>[0-9]+)$',app.views.Institute_detail,name='api_institute_detail'),
     url(r'^api/users/$',app.views.user_list,name='api_user_list'),
     url(r'^profile$',app.views.profiledefault),
+    url(r'^filter$',app.views.filter, name='fileter'),
      url(r'^profile/(?P<user>[a-z0-9]+)$',app.views.profile,name='profile'),
     url(r'^profile/complete/$', app.views.addProfile, name='addProfile'),
     # url(r'^profile/$',app.views.profile,name='profile'),
