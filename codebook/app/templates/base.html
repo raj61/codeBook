@@ -17,7 +17,7 @@
       <div class="nav-wrapper fixed blue">
         <a href="/" class="brand-logo" style="padding:3px">CodeBook</a>
         <ul class="right hide-on-med-and-down">
-
+              <span > <a href='{% url 'filter' %}'>Filter</a></span>
             <span > <a href='{% url 'leaderboard' %}'>Leaderboard</a></span>
           {% if request.user.is_authenticated %}
             <span ><a href='{% url 'profile' request.user %}'>{{user}}</a></span>
@@ -55,7 +55,7 @@
     {% endblock %}
 
         <footer>
-            <p>&copy; {{ year }} - My Django Application</p>
+            <p>&copy;  {{ year }} - My Django Application</p>
         </footer>
     </div>
 

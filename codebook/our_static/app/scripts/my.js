@@ -51,14 +51,14 @@ $(document).ready(function () {
 var csrftoken = getCookie('csrftoken');
 
   //submit refresh
-  $("#update").click(function(){
+  $("#updateCodechef").click(function(){
     console.log("Updating ..");
       var dataString = 'codechefUpdate=1';
       $.ajax({
         type: "POST",
         url: "",
         data: {
-            'content': 'xxx',
+            'content': 'codechef',
             'csrfmiddlewaretoken': csrftoken,
         },
         // data: dataString,
@@ -70,7 +70,42 @@ var csrftoken = getCookie('csrftoken');
           // .fadeIn(1500, function() {
           //   $('#message').append("<img id='checkmark' src='images/check.png' />");
           // });
-          console.log("codechefupdated");
+          Materialize.toast('Updated Codechef Ranks!', 3000)
+
+        },
+        error: function(){
+          Materialize.toast('Error Updating! Try Again.',1000)
+        }
+      });
+
+
+  });
+  // codeforces update
+  //submit refresh
+  $("#updateCodeforces").click(function(){
+    console.log("Updating ..");
+      var dataString = 'codechefUpdate=1';
+      $.ajax({
+        type: "POST",
+        url: "",
+        data: {
+            'content': 'codeforces',
+            'csrfmiddlewaretoken': csrftoken,
+        },
+        // data: dataString,
+        success: function() {
+          // $('#contact_form').html("<div id='message'></div>");
+          // $('#message').html("<h2>Contact Form Submitted!</h2>")
+          // .append("<p>We will be in touch soon.</p>")
+          // .hide()
+          // .fadeIn(1500, function() {
+          //   $('#message').append("<img id='checkmark' src='images/check.png' />");
+          // });
+          Materialize.toast('Updated Codeforces Ratings!', 3000);
+
+        },
+        error: function(){
+          Materialize.toast('Error Updating! Try Again.',1000);
         }
       });
 

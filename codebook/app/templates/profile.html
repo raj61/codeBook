@@ -6,7 +6,11 @@
 {% block content %}
 <div class="row">
 <div class="valign-wrapper">
-
+      {% if message %}
+      <div class="row">
+          {{message}}
+      </div>
+      {% endif %}
     <div class="col s2 profile_img" >
       <img src="{{profile.dp.url}}" class="circle responsive-img">
     </div>
@@ -21,6 +25,11 @@
   </div>
   <div class="col s6">
     <span class="center"> {{profile.mobile_no}} </span>
+    <br>
+    <a class="btn blue right " href=""> Edit Profile</a>
+    <br>
+    <br>
+    <a class="btn blue right" href="{% url 'addSite' %}"> <h6 class="small-text">Add Handles</h6></a>
   </div>
 
   </div>
@@ -33,29 +42,32 @@
 
             <ul>
               <ul class="collection with-header">
-                  <li class="collection-header"><h5>Long Contest</h5></li>
-                  <li class="collection-item">Rating:      <span class="grey-text flow-text right">   {{profile.codechef_rank.long_rating}}</span></li>
-                  <li class="collection-item">Global Rank: <span class="grey-text flow-text right">  {{profile.codechef_rank.long_global}}</span></li>
-                  <li class="collection-item">Local Rank:<span class="grey-text flow-text right">  {{profile.codechef_rank.long_local}}</span></li>
+                  <li class="collection-header"><h5 class="flow-text">Long Contest</h5></li>
+                  <li class="collection-item flow-text"><small>Rating:      <span class="grey-text flow-text right"> {{profile.codechef_rank.long_rating}}</span></small></li>
+                  <li class="collection-item flow-text"><small>Global Rank: <span class="grey-text flow-text right">  {{profile.codechef_rank.long_global}}</span></small></li>
+                  <li class="collection-item flow-text"><small>Local Rank:<span class="grey-text flow-text right">  {{profile.codechef_rank.long_local}}</span></small></li>
               </ul>
               <ul class="collection with-header">
-                  <li class="collection-header"><h5>Short Contest</h5></li>
-                  <li class="collection-item">Rating: <span class="grey-text flow-text right">   {{profile.codechef_rank.short_rating}}</span></li>
-                  <li class="collection-item">Global Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_global}}</span></li>
-                  <li class="collection-item">Local Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_local}}</span></li>
+                  <li class="collection-header"><h5 class="flow-text">Short Contest</h5></li>
+                  <li class="collection-item flow-text"><small>Rating: <span class="grey-text flow-text right">   {{profile.codechef_rank.short_rating}}</span><small></li>
+                  <li class="collection-item flow-text"><small>Global Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_global}}</span></small></li>
+                  <li class="collection-item flow-text"><small>Local Rank:<span class="grey-text flow-text right">   {{profile.codechef_rank.short_local}}</span></small></li>
               </ul>
             </ul>
             <form action="" method="POST">{% csrf_token %}
-            <div id="update"><span class="right col s12"><i class="material-icons btn black col s12">loop</i></span></div>
+            <div id="updateCodechef" onclick="Materialize.toast('Updating...!', 2000)"><span class="right col s12"><i class="material-icons btn black col s12">loop</i></span></div>
           </form>
         </div>
         <div class="col s4 hoverable">
           <span class="blockquote flow-text">Codeforces</span>
           <ul class="collection with-header">
-              <li class="collection-header center"><h5>{{profile.codeforces_rank.position}}</h5></li>
-              <li class="collection-item">Rating: <span class="grey-text flow-text right">{{profile.codeforces_rank.rating}}</span>  </li>
+              <li class="collection-header center"><h5 class="flow-text">{{profile.codeforces_rank.position}}</h5></li>
+              <li class="collection-item flow-text"><small>Rating: <span class="grey-text flow-text right">{{profile.codeforces_rank.rating}}</span> </small> </li>
 
           </ul>
+          <form action="" method="POST">{% csrf_token %}
+          <div id="updateCodeforces" onclick="Materialize.toast('Updating...!', 2000)"><span class="right col s12"><i class="material-icons btn black col s12">loop</i></span></div>
+        </form>
         </div>
         <span class="blockquote flow-text">hackerrank</span>
 

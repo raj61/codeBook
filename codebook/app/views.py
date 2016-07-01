@@ -3,7 +3,7 @@ Definition of views.
 """
 
 from django.shortcuts import render,redirect
-from django.http import HttpRequest,HttpResponseRedirect
+from django.http import HttpRequest,HttpResponseRedirect,HttpResponseNotModified
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -123,17 +123,29 @@ def profile(request,user):
     except Profile.DoesNotExist:
         profile = None
     if not profile:
-        return redirect('/profile/complete')
+        return redirect('/profile/complete/1')
     if request.POST:
-        codechefUpdate(profile.codechef_handle)
-        codeforcesUpdate(profile.codeforces_handle)
-        return HttpResponseRedirect("/user")
-    print (request.POST)
+        if request.POST['content'] == 'codechef':
+            try:
+                codechefUpdate(profile.codechef_handle,profile)
+            except Exception,e:
+                print (e)
+                Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                codeforcesUpdate(profile.codeforces_handle,profile)
+            except Exception,e:
+                print (e)
+                Response(status=status.HTTP_404_NOT_FOUND)
+        # print (request.POST['content'])
+        # codeforcesUpdate(profile.codeforces_handle,profile)
+        return HttpResponseRedirect("/profile")
+    # print ("Hello")
     context={
         "profile":profile
         }
     return render(request,"profile.html",context)
-def codechefUpdate(codechef_handle):
+def codechefUpdate(codechef_handle,profile):
     url = 'https://www.codechef.com/users/'+codechef_handle
     res = requests.get(url)
     Soup = bs4.BeautifulSoup(res.text)
@@ -151,46 +163,52 @@ def codechefUpdate(codechef_handle):
         codechef_rank.short_global = int(codechef_short_global)
         codechef_rank.short_local = int(codechef_short_local)
     except CodechefRank.DoesNotExist:
-        CodechefRank(handle=codechef_handle,
+        codechef_rank = CodechefRank(handle=codechef_handle,
                                             long_global = int(codechef_long_global),
                                             long_local = int(codechef_long_local),
                                             long_rating = float(codechef_long_rating),
                                              short_rating = float(codechef_short_rating),
                                              short_global = int(codechef_short_global),
-                                             short_local = int(codechef_short_local)).save()
-def codeforcesUpdate(codeforces_handle):
+                                             short_local = int(codechef_short_local))
+        codechef_rank.save()
+    profile.codechef_rank = codechef_rank
+    profile.save()
+
+def codeforcesUpdate(codeforces_handle,profile):
     url = 'http://codeforces.com/profile/'+codeforces_handle
     res = requests.get(url)
     Soup = bs4.BeautifulSoup(res.text)
     rating = Soup.select('.info span')
-    # print(rating)
+    # # print(rating)
     position = rating[0].getText()
     ratin = int(rating[1].getText())
-    print (ratin)
+    # print (ratin)
     try:
         codeforces_rank = CodeforcesRank.objects.get(handle=codeforces_handle)
-        print (codeforces_rank.rating)
+        # print (codeforces_rank.rating)
         codeforces_rank.rating =  ratin
-        print (codeforces_rank.rating)
+        # print (codeforces_rank.rating)
         codeforces_rank.position = position
         codeforces_rank.save()
     except CodechefRank.DoesNotExist:
         codeforces_rank = CodeforcesRank(handle=codeforces_handle,
                                          rating = ratin,
-                                         position = position).save()
+                                         position = position)
+        codeforces_rank.save()
+    profile.codeforces_rank = codeforces_rank
 
 
 
 
 
-
+# not in use
 def addProfile(request):
     if request.user.is_authenticated() and request.POST:
         #codechef Rank Fetch
         try:
             codechef_rank = CodechefRank.objects.get(handle=request.POST['codechef_handle'])
         except CodechefRank.DoesNotExist:
-            codechefUpdate(request.POST['codechef_handle'])
+            codechefUpdate(request.POST['codechef_handle'],request.user.profile)
             # url = 'https://www.codechef.com/users/'+request.POST['codechef_handle']
             # res = requests.get(url)
             # Soup = bs4.BeautifulSoup(res.text)
@@ -211,17 +229,7 @@ def addProfile(request):
         try:
             codeforces_rank = CodeforcesRank.objects.get(handle=request.POST['codeforces_handle'])
         except CodeforcesRank.DoesNotExist:
-            url = 'http://codeforces.com/profile/'+request.POST['codeforces_handle']
-            res = requests.get(url)
-            Soup = bs4.BeautifulSoup(res.text)
-            rating = Soup.select('.info span')
-            print(rating)
-            position = rating[0].getText()
-            rating = int(rating[1].getText())
-            codeforces_rank = CodeforcesRank(handle=request.POST['codeforces_handle'],
-                                             rating = rating,
-                                             position = position)
-            codeforces_rank.save()
+            codeforcesUpdate(request.POST['codeforces_handle'],request.user.profile)
         hackerrank_rank = None
         try:
             institute = Institute.objects.get(name=request.POST['institute'])
@@ -254,7 +262,7 @@ def addProfile(request):
         #hackerrank_rank = HackerrankRank(handle=request.POST['hackerrank_handle'],
          #                                points = score[0].getText())
        # hackerrank_rank.save()
-       # print (hackerrank_rank)
+       # # print (hackerrank_rank)
 
 
     return render(request,"addprofile.html",{})
@@ -271,13 +279,13 @@ def filter(request):
         institute = request.POST.get("institute",None)
         branch = request.POST.get("branch",None)
         if institute and branch:
-            profiles1 = Institute.objects.get(instititue = instititue).profiles.all()
-            profiles = profiles1.filter(branch=Branch.objects.get(branch=branch))
+            profiles1 = Institute.objects.get(name = institute).profile.all()
+            profiles = profiles1.filter(branch=Branch.objects.get(name=branch))
 
         elif institute:
             profiles = Profile.objects.filter(institute=Institute.objects.get(name=institute))
         elif  branch:
-            profiles = Branch.objects.get(branch = branch).profiles.all()
+            profiles = Branch.objects.get(name = branch).profile.all()
         else:
             profiles = Profile.objects.all()
         context = {
@@ -285,3 +293,49 @@ def filter(request):
         }
         return render(request,'leaderboard.html',context);
     return render(request,'filter.html',{});
+def completeProfile(request):
+    if request.POST:
+        try:
+            institute = Institute.objects.get(name=request.POST['institute'])
+        except Institute.DoesNotExist:
+            institute = Institute(name=request.POST['institute'])
+            institute.save()
+        try:
+            branch = Branch.objects.get(name=request.POST['branch'])
+        except Branch.DoesNotExist:
+            branch = Branch(name=request.POST['branch'])
+            branch.save()
+        profile = Profile(fname=request.POST['fname'],
+                            lname = request.POST['lname'],
+                            user = request.user,
+                            institute = institute,
+                            branch = branch,
+                            year = request.POST['year'],
+                            mobile_no = request.POST['mobile_no'],
+                            dp = request.FILES['img'])
+        profile.save()
+        context = {
+        'profile':profile,
+        'message':'Profile completed',
+        }
+        return render(request,"profile.html",context)
+
+        #hackerrank_rank = HackerrankRank(handle=request.POST['hackerrank_handle'],
+         #                                points = score[0].getText())
+       # hackerrank_rank.save()
+       # # print (hackerrank_rank)
+
+
+    return render(request,"completeProfile1.html",{})
+def addSite(request):
+    if request.POST:
+        if request.POST['codechef_handle']:
+            profile = Profile.objects.get(user = request.user)
+            codechefUpdate(request.POST['codechef_handle'],profile)
+            # # print ("Hello"+profile)
+        if request.POST['codeforces_handle']:
+            codeforcesUpdate(request.POST['codeforces_handle'],request.user.profile)
+        url = '/profile/'+str(request.user)
+        return redirect(url)
+
+    return render(request,"addSite.html",{})

@@ -3,7 +3,7 @@
 {% block content %}
 <form action="" method="POST">
   {% csrf_token %}
-  <div class="row">
+  <div class="container">
       <!-- <div class="input-field col s6">
           <input id='institute' name='institute' class="validate" type="text" >
           <lable for='institute'>Institue Name </lable>
@@ -24,7 +24,7 @@
       </div>
 
   </div>
-  <input type="submit" class="btn" value="Search">
+  <div class='center'><input type="submit" class="btn blue" value="Search"></div>
 </form>
 
 {% endblock %}
